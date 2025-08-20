@@ -17,7 +17,11 @@ var kafkaConfig = new ConsumerConfig
 var topic = configuration["Kafka:Topic"] ?? throw new InvalidOperationException("Topic not configured");
 var outputFile = configuration["Output:FilePath"] ?? "output.txt";
 
-Directory.CreateDirectory(Path.GetDirectoryName(outputFile) ?? string.Empty);
+var outputDir = Path.GetDirectoryName(outputFile);
+if (!string.IsNullOrEmpty(outputDir))
+{
+    Directory.CreateDirectory(outputDir);
+}
 
 IMessageHandler handler = new MessageHandler();
 
