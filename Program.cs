@@ -44,7 +44,17 @@ try
         var result = consumer.Consume(cts.Token);
         if (handler.ShouldProcess(result.Message.Value))
         {
-            File.AppendAllText(outputFile, result.Message.Value + Environment.NewLine);
+StreamWriter? writer = null;
+try
+{
+    writer = new StreamWriter(outputFile, append: true);
+    while (!cts.IsCancellationRequested)
+    {
+        var result = consumer.Consume(cts.Token);
+        if (handler.ShouldProcess(result.Message.Value))
+        {
+            writer.WriteLine(result.Message.Value);
+            writer.Flush();
             Console.WriteLine($"Processed message: {result.Message.Value}");
         }
         else
